@@ -6,15 +6,6 @@ public class Hotel {
     int rewardCustomerWeekendRate;
     int rating;
 
-    /*public Hotel(String name, int rating, int regularCustomerWeekdayRate, int rewardCustomerWeekdayRate, int regularCustomerWeekendRate, int rewardCustomerWeekendRate) {
-        this.name = name;
-        this.regularCustomerWeekdayRate = regularCustomerWeekdayRate;
-        this.regularCustomerWeekendRate = regularCustomerWeekendRate;
-        this.rewardCustomerWeekdayRate = rewardCustomerWeekdayRate;
-        this.rewardCustomerWeekendRate = rewardCustomerWeekendRate;
-        this.rating = rating;
-    }*/
-
     public String getName() {
         return name;
     }
@@ -65,13 +56,11 @@ public class Hotel {
 
     @Override
     public String toString() {
-        return "Hotel{" +
-                "name='" + name + '\'' +
-                ", regularCustomerWeekdayRate=" + regularCustomerWeekdayRate +
-                ", regularCustomerWeekendRate=" + regularCustomerWeekendRate +
-                ", rewardCustomerWeekdayRate=" + rewardCustomerWeekdayRate +
-                ", rewardCustomerWeekendRate=" + rewardCustomerWeekendRate +
-                ", rating=" + rating +
-                '}';
+        return "name :'" + name + '\'' +
+                ",\n weekday rate for regular customer : " + regularCustomerWeekdayRate +
+                ",\n weekend rate for regular customer : " + regularCustomerWeekendRate +
+                ",\n Weekday rate for reward customer : " + rewardCustomerWeekdayRate +
+                ",\n Weekend rate reward customer : " + rewardCustomerWeekendRate +
+                ",\n rating : " + rating;
     }
 }

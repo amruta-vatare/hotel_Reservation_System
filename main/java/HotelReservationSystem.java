@@ -1,10 +1,9 @@
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.ChronoField;
-import java.util.Date;
-import java.util.List;
+import java.util.Comparator;
 import java.util.Scanner;
-import java.util.stream.Collectors;
+
 
 public class HotelReservationSystem {
     static Hotel hotel;
@@ -22,11 +21,9 @@ public class HotelReservationSystem {
             addDetailsOfHotel();
         }
         displayHotels();
-        //HotelBooking();
-        getCheapHotel();
+        bookHotelForDate();
     }
-
-    private static void getCheapHotel() {
+    public static void bookHotelForDate(){
         Scanner sc = new Scanner(System.in);
         System.out.println("Enter date from in format yyyy-MM-dd");
         String dateFrom = sc.next();
@@ -34,38 +31,42 @@ public class HotelReservationSystem {
         String dateTo = sc.next();
         LocalDate dateF = LocalDate.parse(dateFrom);
         LocalDate dateT = LocalDate.parse(dateTo);
-        if(isWeekend(dateF) && isWeekend(dateT)){
-            List<Hotel> cheapWeekendHotelLList = HotelMenu.hotels.stream().filter((hotel)->hotel.regularCustomerWeekendRate < 100).toList();
-            System.out.println(cheapWeekendHotelLList);
-        }else{
-            List<Hotel> cheapWeekdayHotelLList = HotelMenu.hotels.stream().filter((hotel)->hotel.regularCustomerWeekendRate < 100).toList();
-            System.out.println(cheapWeekdayHotelLList);
+        int days = dateT.getDayOfMonth()-dateF.getDayOfMonth();
+        days = Math.abs(days);
+        System.out.println("Total days are "+days);
+        System.out.println("From "+dateF+" "+dateF.getDayOfWeek()+" to "+dateT+" "+dateT.getDayOfWeek());
+        getBestHotels(dateF, days);
+    }
+
+    private static void getBestHotels(LocalDate dateF,int days) {
+        int isWeekDay = 0;
+        int isWeekEndDay = 0;
+        for (int i = 1 ;i<=days;i++){
+                isWeekDay = 0;
+                isWeekEndDay = 0;
+                LocalDate tempDate = dateF.plusDays(i);
+                if(isWeekend(tempDate)) {isWeekEndDay++;}else { isWeekDay++;}
         }
+        if(isWeekDay>isWeekEndDay) {
+            getCheapHotelsOnWeekDay(days);
+        }else {
+            getCheapHotelsOnWeekEnd(days);
+        }
+    }
+
+    public static void getCheapHotelsOnWeekDay(int days){
+        Hotel cheapHotelAtWeekDay = HotelMenu.hotels.stream().min(Comparator.comparingInt(Hotel::getRegularCustomerWeekdayRate)).get();
+        System.out.println("You are on weekday best hotel at cheap cost");
+        System.out.println(cheapHotelAtWeekDay.name+" rate per day "+cheapHotelAtWeekDay.regularCustomerWeekdayRate+" Total rates for days "+days+" are "+cheapHotelAtWeekDay.regularCustomerWeekdayRate*days);
+
+    }
+    public static void getCheapHotelsOnWeekEnd(int days){
+        Hotel cheapHotelAtWeekend = HotelMenu.hotels.stream().min(Comparator.comparingInt(Hotel::getRegularCustomerWeekendRate)).get();
+        System.out.println("You are on weekend best hotel at cheap cost");
+        System.out.println(cheapHotelAtWeekend.name+" rate per day "+cheapHotelAtWeekend.regularCustomerWeekendRate+" Total rates for days "+days+" are "+cheapHotelAtWeekend.regularCustomerWeekendRate*days);
 
     }
 
-    private static void HotelBooking() {
-        Scanner sc = new Scanner(System.in);
-        System.out.println("Choose hotels");
-        for (int i =0; i<HotelMenu.hotels.size();i++) {
-            System.out.println(i+" :"+HotelMenu.hotels.get(i).name);
-        }
-        int index = sc.nextInt();
-        System.out.println("Enter date from in format yyyy-MM-dd");
-        String dateFrom = sc.next();
-        System.out.println("Enter date to in format yyyy-MM-dd");
-        String dateTo = sc.next();
-        LocalDate dateF = LocalDate.parse(dateFrom);
-        LocalDate dateT = LocalDate.parse(dateTo);
-        if(isWeekend(dateF) && isWeekend(dateT)){
-            int weedEndRate = HotelMenu.hotels.get(index).getRewardCustomerWeekendRate();
-            System.out.println(weedEndRate);
-        }else{
-            int weedDayRate =HotelMenu.hotels.get(index).getRewardCustomerWeekendRate();
-            System.out.println(weedDayRate);
-        }
-
-    }
     public static boolean isWeekend(final LocalDate ld)
     {
         DayOfWeek day = DayOfWeek.of(ld.get(ChronoField.DAY_OF_WEEK));
@@ -75,6 +76,7 @@ public class HotelReservationSystem {
     private static void displayHotels() {
         for (Hotel hotel : hotelList.hotels) {
             System.out.println(hotel);
+            System.out.println("----------------------------------------------------");
         }
     }
 
